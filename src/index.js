@@ -3,15 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 /*
-Square is jusst a function component
+Square is just a function component
 When clicked it puts the appropriate design from css file
-Nothing needs to be done here
+You need to just assign the correct div name for each value
+check css file for div names, the ones needed here are
+circle red-player, circle yellow-player, circle
+I have put dollar signs where you need to fill up
 */
 
 function Square(props) {
     return (
       <button className="square" onClick={() => props.onClick()}>
-        <div className={props.value === 'Red' ? "circle red-player" : props.value === 'Yellow' ? "circle yellow-player" : "circle"}></div>
+        <div className={props.value === 'Red' ? $$$ : props.value === 'Yellow' ? $$$ : $$$}></div>
       </button>
     );
 }
