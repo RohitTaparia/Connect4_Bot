@@ -56,6 +56,51 @@ class Board extends React.Component {
         }
     }
 
+    miniMax(tempBoard, curPlayer, depth, track) {
+        let score;
+        //check if terminal state, depth == 0 or gameover or board filled(DRAW)
+        //call get_state and return it
+
+        const opponent = (curPlayer === 'Red')? 'Yellow' : 'Red';
+        var best = (curPlayer === 'Red')? 50000 : -50000; // random big values i took
+        var pos = 3; // default can be anything doesn't matter
+
+        /* loop for all columns from 0-6
+        if yellow(computer turn) then use maximizer function
+        else if red(player turn) use minimzer function
+        keep updating tempBoard & track when you pass them for recursion, decrease depth also by 1
+        and once it comes back revert the change back to normal to pass for next iteration
+        best should store the highest or lowest score possible depending on who current player is
+        */
+
+        /* if this was the starting point of recursion check depth == whatever value you set 
+        in AIplay then return the position to play
+        else return best which stored the best score we could get from this path */
+        
+    }
+
+    AIplay() {
+        //check if winner exists and return
+        
+        const val = this.state.boardValue.slice();
+        const curPlayer = this.state.redIsNext? 'Red' : 'Yellow';
+        
+        var depth = 6 //try changing this value in your browsers
+        //in mine this works at a decent speed
+        var track = new Array(7).fill(7);
+        //Track first empty position of each column
+        //track[i] = the position in the ith column where the next turn will fall
+
+        var pos = this.miniMax(val, curPlayer, depth, track);
+        //returns which column is the most optimal to play in
+
+        //put the computer token in pos column
+        //check if game over
+
+        //set state again like how in player
+        //no callback function needed
+    }
+
     handleClick(col) {
         /* Check if there exists a winner 
         If winner is not null then return since game is over 
@@ -87,6 +132,12 @@ class Board extends React.Component {
         boardValue will be val
         redIsNext should be complemented
         winner assign curWinner*/
+        this.setState({
+            boardValue: val,
+            redIsNext: !this.state.redIsNext,
+            winner: curWinner,},() => {
+            this.AIplay(); // Call to function for computer to take it's turn
+        });
     }
 
     renderCol(i) {
@@ -112,6 +163,62 @@ class Board extends React.Component {
             </div>
         );
     }
+}
+
+/* called from get_state
+count the number of yellow, red and empty in the sequence of 4 passed
+and assign scores according to how close to win or lose
+computer winning should be positive scores
+player winning should be negative scores
+*/
+
+function calc(a, b, c, d) {
+    let y = 0;
+    let r = 0;
+    //Count for Each
+
+    /* these are very random values i have given based on intuition
+    and it seems to be working well */
+    /*Check these references for better understanding
+    https://medium.com/analytics-vidhya/artificial-intelligence-at-play-connect-four-minimax-algorithm-explained-3b5fc32e4a4f
+    https://towardsdatascience.com/creating-the-perfect-connect-four-ai-bot-c165115557b0
+    */
+
+    if(y === 4 && r === 0) {
+        return 5000;
+    } 
+    else if(y === 3 && r === 0) {
+        return 50;
+    } 
+    else if(y === 2 && r === 0) {
+        return 4;
+    }
+    else if(y === 0 && r === 4) {
+        return -3000;
+    }
+    else if(y === 0 && r === 3) {
+        return -100;
+    }
+    else if(y === 0 && r === 2) {
+        return -10;
+    }
+    else {
+        return 0;
+    }
+}
+
+/* We check similar to gameover
+for every winnable sequence of 4 positions
+what they are filled with or how many are empty*/
+
+function get_state(tempBoard) {
+    var total = 0;
+    //VERTICAL
+    for (let c = 0; c < 7; c++)
+        for (let r = 0; r < 3; r++)
+            total += calc(tempBoard[c][r], tempBoard[c][r+1], tempBoard[c][r+2], tempBoard[c][r+3]);
+
+    //Do for other 3 directions and return total
 }
 
 /*
